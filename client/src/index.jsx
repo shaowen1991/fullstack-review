@@ -16,6 +16,11 @@ class App extends React.Component {
   search (term) {
     console.log(`${term} was searched`);
     // TODO
+    $.post('/repos/import', {term: term}, () => {
+      console.log('success make req to server');
+    }), () => {
+      console.log('fail make req to server');
+    }
   }
 
   render () {
