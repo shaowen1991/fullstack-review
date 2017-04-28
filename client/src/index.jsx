@@ -10,15 +10,34 @@ class App extends React.Component {
     this.state = { 
       repos: []
     }
+    this.search = this.search.bind(this);
+  }
 
+  componentWillMount () {
+    $.get('/repos', (data) => {
+      console.log(data);
+      this.setState({
+        repos: data
+      });
+    });
   }
 
   search (term) {
     console.log(`${term} was searched`);
-    // TODO
-    $.post('/repos/import', {term: term}, () => {
+    $.post('/repos/import', {term: term}, 
+    //if success
+    () => {
       console.log('success make req to server');
-    }), () => {
+      //after posting data, trigger refresh with new data
+      $.get('/repos', (data) => {
+        console.log(data);
+        this.setState({
+          repos: data
+        });
+      });
+    }),
+    //if fail
+    () => {
       console.log('fail make req to server');
     }
   }
@@ -27,7 +46,7 @@ class App extends React.Component {
     return (<div>
       <h1>Github Fetcher</h1>
       <RepoList repos={this.state.repos}/>
-      <Search onSearch={this.search.bind(this)}/>
+      <Search onSearch={this.search}/>
     </div>)
   }
 }
